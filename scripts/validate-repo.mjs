@@ -12,7 +12,11 @@ const required = [
   'apps/mobile/src/App.tsx',
   'infra/terraform/main.tf',
   'docker-compose.yml',
-  '.github/workflows/ci.yml'
+  '.github/workflows/ci.yml',
+  'tsconfig.base.json',
+  'apps/api/tsconfig.json',
+  'apps/web/tsconfig.json',
+  'vercel.json',
 ];
 
 const missing = required.filter((file) => !existsSync(file));

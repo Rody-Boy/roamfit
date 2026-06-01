@@ -10,7 +10,11 @@
   "scripts": {
     "validate:repo": "node scripts/validate-repo.mjs",
     "lint": "npm run validate:repo",
-    "test": "npm run validate:repo"
+    "test": "npm run validate:repo",
+    "build": "npm --workspace @roamfit/web run build",
+    "typecheck:api": "tsc -p apps/api/tsconfig.json --noEmit",
+    "typecheck:web": "tsc -p apps/web/tsconfig.json --noEmit",
+    "typecheck": "npm run typecheck:api && npm run typecheck:web"
   },
   "engines": {
     "node": ">=22.0.0",
