@@ -1,0 +1,19 @@
+{
+  "name": "roamfit-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "RoamFit production-grade marketplace platform scaffold.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "validate:repo": "node scripts/validate-repo.mjs",
+    "lint": "npm run validate:repo",
+    "test": "npm run validate:repo"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}
