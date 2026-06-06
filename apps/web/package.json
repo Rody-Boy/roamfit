@@ -2,7 +2,11 @@
   "name": "@roamfit/web",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
     "next": "^15.0.0",
     "react": "^19.0.0",
@@ -13,5 +17,10 @@
     "framer-motion": "^12.0.0",
     "mapbox-gl": "^3.0.0"
   },
-  "devDependencies": { "typescript": "^5.8.0", "tailwindcss": "^4.0.0" }
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "tailwindcss": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
 }

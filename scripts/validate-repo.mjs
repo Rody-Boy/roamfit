@@ -9,6 +9,7 @@ const required = [
   'apps/api/prisma/schema.prisma',
   'apps/api/src/main.ts',
   'apps/web/app/page.tsx',
+  'apps/web/app/layout.tsx',
   'apps/mobile/src/App.tsx',
   'infra/terraform/main.tf',
   'docker-compose.yml',
@@ -42,6 +43,26 @@ const missingModels = requiredModels.filter((model) => !new RegExp(`model\\s+${m
 if (missingModels.length) {
   console.error(`Missing Prisma models:\n${missingModels.join('\n')}`);
   process.exit(1);
+}
+
+
+
+const webPackage = JSON.parse(readFileSync('apps/web/package.json', 'utf8'));
+const webDevDependencies = webPackage.devDependencies ?? {};
+for (const dependency of ['@types/react', '@types/react-dom']) {
+  if (!webDevDependencies[dependency]) {
+    console.error(`apps/web/package.json must include ${dependency} in devDependencies so Next.js can type-check production builds without auto-installing packages.`);
+    process.exit(1);
+  }
+}
+
+const rootPackage = JSON.parse(readFileSync('package.json', 'utf8'));
+const rootDevDependencies = rootPackage.devDependencies ?? {};
+for (const dependency of ['next', 'react', 'react-dom']) {
+  if (!rootDevDependencies[dependency]) {
+    console.error(`Root package.json must include ${dependency} in devDependencies so Vercel can identify the Next.js version for repository-root deployments.`);
+    process.exit(1);
+  }
 }
 
 const docs = readFileSync('docs/product-requirements.md', 'utf8');
