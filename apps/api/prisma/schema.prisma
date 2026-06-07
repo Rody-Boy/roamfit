@@ -1,0 +1,290 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus { PENDING ACTIVE SUSPENDED DELETED }
+enum BusinessStatus { DRAFT PENDING_REVIEW APPROVED SUSPENDED REJECTED }
+enum FacilityStatus { DRAFT ACTIVE PAUSED SUSPENDED CLOSED }
+enum TransactionStatus { PENDING PROCESSING SUCCEEDED FAILED CANCELED REFUNDED }
+enum CheckInStatus { TOKEN_ISSUED REDEEMED EXPIRED REJECTED FLAGGED }
+enum NotificationChannel { PUSH EMAIL IN_APP SMS }
+enum RewardType { BONUS_CREDITS VOUCHER MERCHANDISE PARTNER_REWARD PREMIUM_FEATURE }
+enum FraudSeverity { LOW MEDIUM HIGH CRITICAL }
+
+model User {
+  id              String              @id @default(uuid())
+  email           String              @unique
+  phone           String?             @unique
+  passwordHash    String?
+  status          UserStatus          @default(PENDING)
+  emailVerifiedAt DateTime?
+  phoneVerifiedAt DateTime?
+  profile         UserProfile?
+  fitnessProfile  FitnessProfile?
+  ownerLinks      FacilityOwner[]
+  staffLinks      FacilityStaff[]
+  roles           UserRole[]
+  sessions        Session[]
+  devices         Device[]
+  purchases       Purchase[]
+  creditLedger    CreditLedger[]
+  checkIns        CheckIn[]
+  reviews         Review[]
+  fitPoints       FitPointLedger[]
+  streak          Streak?
+  passport        FitnessPassport?
+  notifications   Notification[]
+  auditLogs       AuditLog[]          @relation("AuditActor")
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  deletedAt       DateTime?
+  version         Int                 @default(1)
+}
+
+model UserProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  firstName   String
+  lastName    String
+  displayName String?
+  avatarUrl   String?
+  birthDate   DateTime?
+  locale      String   @default("en-PH")
+  timezone    String   @default("Asia/Manila")
+  city        String?
+  province    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FitnessProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  heightCm           Decimal? @db.Decimal(5, 2)
+  weightKg           Decimal? @db.Decimal(5, 2)
+  sex                String?
+  fitnessLevel       String?
+  goalIds            String[]
+  consistencyScore   Int      @default(0)
+  scoreLabel         String?
+  scoringRuleVersion Int      @default(1)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Business {
+  id              String           @id @default(uuid())
+  legalName       String
+  tradeName       String
+  status          BusinessStatus   @default(DRAFT)
+  taxId           String?
+  verification    Json             @default("{}")
+  owners          FacilityOwner[]
+  staff           FacilityStaff[]
+  facilities      Facility[]
+  payouts         Payout[]
+  promotions      Promotion[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  version         Int              @default(1)
+}
+
+model FacilityOwner {
+  id         String   @id @default(uuid())
+  userId     String
+  businessId String
+  user       User     @relation(fields: [userId], references: [id])
+  business   Business @relation(fields: [businessId], references: [id])
+  title      String?
+  createdAt  DateTime @default(now())
+  @@unique([userId, businessId])
+}
+
+model FacilityStaff {
+  id         String    @id @default(uuid())
+  userId     String
+  businessId String
+  facilityId String?
+  user       User      @relation(fields: [userId], references: [id])
+  business   Business  @relation(fields: [businessId], references: [id])
+  facility   Facility? @relation(fields: [facilityId], references: [id])
+  staffCode  String?
+  active     Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  @@unique([userId, businessId, facilityId])
+}
+
+model Facility {
+  id              String              @id @default(uuid())
+  businessId      String
+  business        Business            @relation(fields: [businessId], references: [id])
+  name            String
+  slug            String              @unique
+  description     String?
+  status          FacilityStatus      @default(DRAFT)
+  categoryIds     String[]
+  addressLine1    String
+  addressLine2    String?
+  city            String
+  province        String
+  postalCode      String?
+  country         String              @default("PH")
+  latitude        Decimal             @db.Decimal(10, 7)
+  longitude       Decimal             @db.Decimal(10, 7)
+  geofenceMeters  Int                 @default(150)
+  creditCost      Int
+  capacity        Int?
+  peakHours       Json                @default("[]")
+  operatingHours  Json                @default("[]")
+  media           Json                @default("[]")
+  amenities       FacilityAmenity[]
+  equipment       FacilityEquipment[]
+  services        FacilityService[]
+  staff           FacilityStaff[]
+  checkIns        CheckIn[]
+  reviews         Review[]
+  ratingAverage   Decimal             @default(0) @db.Decimal(3, 2)
+  ratingCount     Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  deletedAt       DateTime?
+  version         Int                 @default(1)
+}
+
+model Amenity { id String @id @default(uuid()) name String @unique description String? active Boolean @default(true) facilities FacilityAmenity[] createdAt DateTime @default(now()) }
+model Equipment { id String @id @default(uuid()) name String @unique description String? active Boolean @default(true) facilities FacilityEquipment[] createdAt DateTime @default(now()) }
+model Service { id String @id @default(uuid()) name String @unique description String? active Boolean @default(true) facilities FacilityService[] createdAt DateTime @default(now()) }
+
+model FacilityAmenity { facilityId String amenityId String facility Facility @relation(fields: [facilityId], references: [id]) amenity Amenity @relation(fields: [amenityId], references: [id]) @@id([facilityId, amenityId]) }
+model FacilityEquipment { facilityId String equipmentId String quantity Int? notes String? facility Facility @relation(fields: [facilityId], references: [id]) equipment Equipment @relation(fields: [equipmentId], references: [id]) @@id([facilityId, equipmentId]) }
+model FacilityService { facilityId String serviceId String priceNote String? bookingUrl String? facility Facility @relation(fields: [facilityId], references: [id]) service Service @relation(fields: [serviceId], references: [id]) @@id([facilityId, serviceId]) }
+
+model CreditPackage {
+  id            String     @id @default(uuid())
+  name          String
+  description   String?
+  currency      String     @default("PHP")
+  priceCents    Int
+  credits       Int
+  validityDays  Int
+  active        Boolean    @default(true)
+  metadata      Json       @default("{}")
+  purchases     Purchase[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Purchase {
+  id              String            @id @default(uuid())
+  userId          String
+  creditPackageId String
+  user            User              @relation(fields: [userId], references: [id])
+  creditPackage   CreditPackage     @relation(fields: [creditPackageId], references: [id])
+  amountCents     Int
+  currency        String            @default("PHP")
+  status          TransactionStatus @default(PENDING)
+  provider        String
+  providerRef     String?
+  transactions    Transaction[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Transaction {
+  id             String            @id @default(uuid())
+  purchaseId     String?
+  purchase       Purchase?         @relation(fields: [purchaseId], references: [id])
+  type           String
+  status         TransactionStatus @default(PENDING)
+  amountCents    Int
+  currency       String            @default("PHP")
+  provider       String?
+  providerRef    String?           @unique
+  idempotencyKey String?           @unique
+  rawPayload     Json              @default("{}")
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model CreditLedger {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  checkInId   String?
+  checkIn     CheckIn? @relation(fields: [checkInId], references: [id])
+  reason      String
+  delta       Int
+  balance     Int
+  expiresAt   DateTime?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+}
+
+model CheckIn {
+  id             String          @id @default(uuid())
+  userId         String
+  facilityId     String
+  staffId        String?
+  user           User            @relation(fields: [userId], references: [id])
+  facility       Facility        @relation(fields: [facilityId], references: [id])
+  status         CheckInStatus   @default(TOKEN_ISSUED)
+  creditsCharged Int
+  tokenNonceHash String          @unique
+  geofence       Json            @default("{}")
+  validation     Json            @default("{}")
+  redeemedAt     DateTime?
+  expiresAt      DateTime
+  trainingLogs   TrainingLog[]
+  reviews        Review[]
+  creditLedger   CreditLedger[]
+  fraudEvents    FraudEvent[]
+  createdAt      DateTime        @default(now())
+}
+
+model TrainingLog { id String @id @default(uuid()) checkInId String checkIn CheckIn @relation(fields: [checkInId], references: [id]) muscleGroupIds String[] notes String? createdAt DateTime @default(now()) }
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  facilityId String
+  checkInId  String
+  user       User     @relation(fields: [userId], references: [id])
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  checkIn    CheckIn  @relation(fields: [checkInId], references: [id])
+  rating     Int
+  comment    String?
+  photos     Json     @default("[]")
+  status     String   @default("PUBLISHED")
+  flags      Json     @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  @@unique([userId, checkInId])
+}
+
+model Reward { id String @id @default(uuid()) name String description String? type RewardType costPoints Int bonusCredits Int? active Boolean @default(true) inventory Int? metadata Json @default("{}") createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model FitPointLedger { id String @id @default(uuid()) userId String user User @relation(fields: [userId], references: [id]) reason String delta Int balance Int metadata Json @default("{}") createdAt DateTime @default(now()) }
+model Level { id String @id @default(uuid()) name String @unique thresholdPoints Int benefits Json @default("{}") active Boolean @default(true) sortOrder Int @default(0) }
+model Challenge { id String @id @default(uuid()) name String description String? type String startsAt DateTime endsAt DateTime rules Json rewards Json active Boolean @default(true) completions ChallengeCompletion[] createdAt DateTime @default(now()) }
+model ChallengeCompletion { id String @id @default(uuid()) challengeId String userId String challenge Challenge @relation(fields: [challengeId], references: [id]) completedAt DateTime @default(now()) metadata Json @default("{}") @@unique([challengeId, userId]) }
+model Streak { id String @id @default(uuid()) userId String @unique user User @relation(fields: [userId], references: [id]) currentDays Int @default(0) longestDays Int @default(0) lifetimeMilestones Int[] lastVisitAt DateTime? updatedAt DateTime @updatedAt }
+model FitnessPassport { id String @id @default(uuid()) userId String @unique user User @relation(fields: [userId], references: [id]) citiesVisited String[] provincesVisited String[] facilityIds String[] achievements Json @default("[]") updatedAt DateTime @updatedAt }
+model Notification { id String @id @default(uuid()) userId String user User @relation(fields: [userId], references: [id]) channel NotificationChannel title String body String data Json @default("{}") readAt DateTime? sentAt DateTime? createdAt DateTime @default(now()) }
+model Promotion { id String @id @default(uuid()) businessId String? business Business? @relation(fields: [businessId], references: [id]) name String description String? rules Json startsAt DateTime endsAt DateTime active Boolean @default(true) createdAt DateTime @default(now()) }
+model Payout { id String @id @default(uuid()) businessId String business Business @relation(fields: [businessId], references: [id]) amountCents Int currency String @default("PHP") status String @default("PENDING") periodStart DateTime periodEnd DateTime metadata Json @default("{}") createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model FraudEvent { id String @id @default(uuid()) userId String? checkInId String? checkIn CheckIn? @relation(fields: [checkInId], references: [id]) severity FraudSeverity type String signal Json status String @default("OPEN") createdAt DateTime @default(now()) }
+model AuditLog { id String @id @default(uuid()) actorUserId String? actor User? @relation("AuditActor", fields: [actorUserId], references: [id]) action String targetType String targetId String? before Json? after Json? ipAddress String? userAgent String? traceId String? createdAt DateTime @default(now()) }
+model Role { id String @id @default(uuid()) name String @unique description String? permissions RolePermission[] users UserRole[] createdAt DateTime @default(now()) }
+model Permission { id String @id @default(uuid()) key String @unique description String? roles RolePermission[] createdAt DateTime @default(now()) }
+model RolePermission { roleId String permissionId String role Role @relation(fields: [roleId], references: [id]) permission Permission @relation(fields: [permissionId], references: [id]) @@id([roleId, permissionId]) }
+model UserRole { userId String roleId String user User @relation(fields: [userId], references: [id]) role Role @relation(fields: [roleId], references: [id]) @@id([userId, roleId]) }
+model Session { id String @id @default(uuid()) userId String user User @relation(fields: [userId], references: [id]) refreshTokenHash String @unique ipAddress String? userAgent String? revokedAt DateTime? expiresAt DateTime createdAt DateTime @default(now()) }
+model Device { id String @id @default(uuid()) userId String user User @relation(fields: [userId], references: [id]) fingerprintHash String name String? platform String? trustScore Int @default(50) lastSeenAt DateTime? revokedAt DateTime? createdAt DateTime @default(now()) @@unique([userId, fingerprintHash]) }
+model PlatformSetting { id String @id @default(uuid()) key String @unique value Json version Int @default(1) updatedBy String? updatedAt DateTime @updatedAt createdAt DateTime @default(now()) }
