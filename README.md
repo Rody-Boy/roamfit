@@ -1,33 +1,49 @@
-# RoamFit
+# RoamFit Laravel MVP
 
-RoamFit is a production-grade fitness and sports access marketplace for the Philippines built around the promise: **Train Anywhere in the Philippines.**
+RoamFit is a credit-based fitness marketplace for the Philippines. This repository has been reset from a multi-application TypeScript scaffold to a **single Laravel MVP** so the first release can ship faster with fewer deployment and dependency issues.
 
-This repository contains the venture-scale product blueprint and implementation scaffold for a modular monolith SaaS platform with member, business, staff, and super-admin experiences.
+## MVP Goal
 
-## Workspaces
+Ship the smallest useful product loop:
 
-- `apps/api` — NestJS REST API, Prisma data model, OpenAPI-ready modular monolith.
-- `apps/web` — Next.js App Router web shell for member portal, business dashboard, and admin dashboard.
-- `apps/mobile` — Expo React Native mobile shell for member and staff workflows.
-- `packages/shared` — Shared TypeScript contracts and constants.
-- `docs` — Product, architecture, security, rollout, cost, and roadmap documentation.
-- `infra/terraform` — AWS Terraform skeleton for ECS Fargate, RDS, Redis, OpenSearch, S3, CloudFront, WAF, SES, SNS, and observability.
+1. Members register and browse active facilities.
+2. Admins configure businesses, facilities, categories, and credit packages.
+3. Members buy/request credits.
+4. Staff redeem member check-ins.
+5. The credit ledger remains accurate and auditable.
 
-## Brand
+## Stack
 
-The app name is **RoamFit**. Historical prompt references to “FitPass PH” are treated as legacy naming only.
+- Laravel 12-style application at the repository root
+- Blade views with Tailwind CDN for the MVP UI
+- Eloquent models and migrations
+- PostgreSQL for production, SQLite for local development/tests
+- Manual payment confirmation before payment gateway integration
+- Responsive web first; native mobile deferred
 
-## Quick Start
+## Local Setup
 
 ```bash
 cp .env.example .env
-npm install
-npm run validate:repo
+composer install
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+php artisan serve
 ```
 
-## Engineering Principles
+Default seeded users after `php artisan migrate --seed`:
 
-- Configurable taxonomy, pricing, rewards, scoring, and credit rules; no hardcoded business categories or package values.
-- Security-first architecture with short-lived QR tokens, fraud eventing, audit logs, RBAC, rate limits, and payment abstraction.
-- Modular monolith boundaries aligned to future microservice extraction.
-- Beginner-friendly fitness guidance without medical claims.
+- Admin: `admin@roamfit.test` / `password`
+- Owner: `owner@roamfit.test` / `password`
+
+## Development Checks
+
+```bash
+composer test
+find app bootstrap config database routes tests -name '*.php' -print0 | xargs -0 -n1 php -l
+```
+
+## Roadmap
+
+See `docs/laravel-mvp-epics-and-stories.md` for the phased MVP plan.
