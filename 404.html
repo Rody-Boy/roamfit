@@ -34,9 +34,19 @@
     .steps { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; counter-reset:step; }
     .step { counter-increment:step; border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:20px; background:rgba(15,23,42,.72); }
     .step:before { content:counter(step); display:grid; place-items:center; width:34px; height:34px; border-radius:999px; background:var(--green2); color:#02130d; font-weight:900; margin-bottom:14px; }
+
+    .preview-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-top:28px; }
+    .preview-button { border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:18px; background:rgba(255,255,255,.06); text-decoration:none; display:block; transition:.18s ease; }
+    .preview-button:hover { border-color:var(--green); transform: translateY(-2px); }
+    .preview-button strong { display:block; font-size:16px; color:white; }
+    .preview-button span { display:block; margin-top:8px; color:#94a3b8; font-size:13px; line-height:1.5; }
+    .screen { margin-top:18px; border:1px solid rgba(255,255,255,.1); border-radius:22px; background:rgba(15,23,42,.78); padding:22px; }
+    .screen h3 { margin:0 0 8px; color:var(--green); }
+    .screen code { color:#d1fae5; background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.18); padding:2px 6px; border-radius:8px; }
+    .mini-list { margin:14px 0 0; padding-left:20px; color:var(--muted); line-height:1.7; }
     .note { color:#94a3b8; font-size:14px; line-height:1.7; margin-top:28px; }
     footer { padding:40px 0; color:#94a3b8; border-top:1px solid rgba(255,255,255,.08); }
-    @media (max-width: 760px) { .grid, .steps { grid-template-columns:1fr; } .navlinks { display:none; } }
+    @media (max-width: 760px) { .grid, .steps, .preview-grid { grid-template-columns:1fr; } .navlinks { display:none; } }
   </style>
 </head>
 <body>
@@ -78,6 +88,37 @@
           <div class="step"><strong>Credits</strong><p>Support configurable packages and a ledger.</p></div>
           <div class="step"><strong>Check-ins</strong><p>Redeem member visits with staff validation.</p></div>
         </div>
+
+        <h2 style="margin-top:46px">Feature preview buttons</h2>
+        <p class="lead">Click these buttons to see what each Laravel screen is for. On GitHub Pages these are static previews; in the real Laravel app, use the route shown in each card.</p>
+        <div class="preview-grid">
+          <a class="preview-button" href="#preview-home"><strong>Home</strong><span>Public landing page and featured active facilities.</span></a>
+          <a class="preview-button" href="#preview-facilities"><strong>Facilities</strong><span>Browse active gyms and search by keyword/city/province.</span></a>
+          <a class="preview-button" href="#preview-facility-detail"><strong>Facility Detail</strong><span>See credits, location, capacity, and check-in CTA.</span></a>
+          <a class="preview-button" href="#preview-register"><strong>Register</strong><span>Create a member account.</span></a>
+          <a class="preview-button" href="#preview-login"><strong>Login</strong><span>Access dashboard/admin tools.</span></a>
+          <a class="preview-button" href="#preview-dashboard"><strong>Dashboard</strong><span>Member credit balance and ledger history.</span></a>
+          <a class="preview-button" href="#preview-admin"><strong>Admin</strong><span>Admin hub for marketplace operations.</span></a>
+          <a class="preview-button" href="#preview-businesses"><strong>Admin Businesses</strong><span>Create, approve, suspend partner businesses.</span></a>
+          <a class="preview-button" href="#preview-admin-facilities"><strong>Admin Facilities</strong><span>Create/edit facility listings and credit costs.</span></a>
+          <a class="preview-button" href="#preview-categories"><strong>Admin Categories</strong><span>Configure facility types without hardcoding.</span></a>
+          <a class="preview-button" href="#preview-credits"><strong>Credits</strong><span>Credit packages and ledger primitives for Phase 2.</span></a>
+          <a class="preview-button" href="#preview-checkins"><strong>Check-ins</strong><span>Token, redemption, and visit primitives for Phase 3.</span></a>
+        </div>
+
+        <div id="preview-home" class="screen"><h3>Home</h3><p>Laravel route: <code>/</code></p><ul class="mini-list"><li>Shows the RoamFit tagline.</li><li>Highlights featured active facilities.</li><li>Has CTAs to browse facilities or create an account.</li></ul></div>
+        <div id="preview-facilities" class="screen"><h3>Facilities</h3><p>Laravel route: <code>/facilities</code></p><ul class="mini-list"><li>Lists only facilities with active status.</li><li>Search supports keyword, city, and province.</li><li>Each card shows location, categories, and credit cost.</li></ul></div>
+        <div id="preview-facility-detail" class="screen"><h3>Facility Detail</h3><p>Example Laravel route: <code>/facilities/demo-fitness-manila</code></p><ul class="mini-list"><li>Shows description, city/province, credit cost, capacity, and status.</li><li>Logged-out users see a login-to-check-in CTA.</li><li>Check-in workflow starts in Phase 3.</li></ul></div>
+        <div id="preview-register" class="screen"><h3>Register</h3><p>Laravel route: <code>/register</code></p><ul class="mini-list"><li>Creates a member account.</li><li>New users default to role <code>member</code> and status <code>active</code>.</li></ul></div>
+        <div id="preview-login" class="screen"><h3>Login</h3><p>Laravel route: <code>/login</code></p><ul class="mini-list"><li>Authenticates existing users.</li><li>Seeded admin is <code>admin@roamfit.test</code> / <code>password</code> after local seeding.</li></ul></div>
+        <div id="preview-dashboard" class="screen"><h3>Dashboard</h3><p>Laravel route: <code>/dashboard</code></p><ul class="mini-list"><li>Requires login.</li><li>Shows member credit balance.</li><li>Shows recent credit ledger entries.</li></ul></div>
+        <div id="preview-admin" class="screen"><h3>Admin</h3><p>Laravel route: <code>/admin</code></p><ul class="mini-list"><li>Requires an authenticated admin user.</li><li>Links to businesses, facilities, and categories.</li></ul></div>
+        <div id="preview-businesses" class="screen"><h3>Admin Businesses</h3><p>Laravel route: <code>/admin/businesses</code></p><ul class="mini-list"><li>Create and edit partner businesses.</li><li>Assign owner users.</li><li>Set status: pending, approved, rejected, or suspended.</li></ul></div>
+        <div id="preview-admin-facilities" class="screen"><h3>Admin Facilities</h3><p>Laravel route: <code>/admin/facilities</code></p><ul class="mini-list"><li>Create and edit facility listings.</li><li>Assign business, categories, city/province, status, capacity, and credit cost.</li><li>Only active facilities appear publicly.</li></ul></div>
+        <div id="preview-categories" class="screen"><h3>Admin Categories</h3><p>Laravel route: <code>/admin/facility-categories</code></p><ul class="mini-list"><li>Create configurable facility categories.</li><li>Enable/disable categories.</li><li>Sort categories for admin/user display.</li></ul></div>
+        <div id="preview-credits" class="screen"><h3>Credits</h3><p>Current code: migrations/models for <code>credit_packages</code>, <code>purchases</code>, and <code>credit_ledger_entries</code>.</p><ul class="mini-list"><li>Admin credit package screens are planned for Phase 2.</li><li>Manual purchase confirmation comes before payment gateway integration.</li></ul></div>
+        <div id="preview-checkins" class="screen"><h3>Check-ins</h3><p>Current code: migrations/models for <code>check_in_tokens</code> and <code>check_ins</code>.</p><ul class="mini-list"><li>Member token generation and staff redemption are planned for Phase 3.</li><li>The database primitives are already present for the MVP loop.</li></ul></div>
+
         <p class="note">GitHub Pages can only serve static files. The Laravel app in this repository requires a PHP host such as Laravel Forge, Ploi, Render, Railway, DigitalOcean, or another server that can run PHP and a database.</p>
       </div>
     </section>

@@ -35,6 +35,26 @@ Ship the smallest useful product loop:
 
 The repository includes a static `index.html` landing page so `https://rody-boy.github.io/roamfit/` opens a RoamFit website immediately on GitHub Pages. GitHub Pages is static-only, so this page is a preview/landing page; the Laravel application still needs a PHP-capable host for the full MVP.
 
+
+## Screen Access Guide
+
+On GitHub Pages, use the static feature preview buttons at `https://rody-boy.github.io/roamfit/`. In a running Laravel environment, these are the MVP routes:
+
+| Screen | URL |
+| --- | --- |
+| Home | `/` |
+| Facilities | `/facilities` |
+| Facility detail example | `/facilities/demo-fitness-manila` |
+| Register | `/register` |
+| Login | `/login` |
+| Dashboard | `/dashboard` |
+| Admin home | `/admin` |
+| Admin businesses | `/admin/businesses` |
+| Admin facilities | `/admin/facilities` |
+| Admin categories | `/admin/facility-categories` |
+
+Seeded admin login after `php artisan migrate --seed`: `admin@roamfit.test` / `password`.
+
 ## Local Setup
 
 ```bash
