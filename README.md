@@ -30,6 +30,11 @@ Ship the smallest useful product loop:
 - Seeded admin, owner, category, business, facility, and starter credit package.
 - Marketplace, credit package, purchase, check-in token, check-in, and credit ledger migrations.
 
+
+## GitHub Pages Preview
+
+The repository includes a static `index.html` landing page so `https://rody-boy.github.io/roamfit/` opens a RoamFit website immediately on GitHub Pages. GitHub Pages is static-only, so this page is a preview/landing page; the Laravel application still needs a PHP-capable host for the full MVP.
+
 ## Local Setup
 
 ```bash

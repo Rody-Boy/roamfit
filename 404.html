@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RoamFit — Train Anywhere in the Philippines</title>
+  <meta name="description" content="RoamFit is a credit-based fitness marketplace connecting members with independent gyms and fitness facilities across the Philippines.">
+  <meta property="og:title" content="RoamFit — Train Anywhere in the Philippines">
+  <meta property="og:description" content="A simple credit-based fitness marketplace MVP for the Philippines.">
+  <meta property="og:type" content="website">
+  <style>
+    :root { color-scheme: dark; --bg:#020617; --panel:#0f172a; --muted:#cbd5e1; --green:#6ee7b7; --green2:#34d399; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: radial-gradient(circle at top left, rgba(16,185,129,.22), transparent 35%), var(--bg); color:white; }
+    a { color: inherit; }
+    .wrap { width:min(1120px, calc(100% - 32px)); margin:0 auto; }
+    header { border-bottom:1px solid rgba(255,255,255,.1); background:rgba(2,6,23,.8); backdrop-filter: blur(16px); position:sticky; top:0; z-index:10; }
+    nav { display:flex; align-items:center; justify-content:space-between; padding:18px 0; }
+    .brand { color:var(--green); font-weight:900; font-size:24px; text-decoration:none; }
+    .navlinks { display:flex; gap:18px; align-items:center; color:#e2e8f0; font-size:14px; }
+    .pill { display:inline-flex; align-items:center; justify-content:center; border-radius:999px; background:var(--green2); color:#02130d; padding:12px 18px; font-weight:800; text-decoration:none; }
+    .ghost { display:inline-flex; border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:12px 18px; font-weight:800; text-decoration:none; }
+    .hero { padding:72px 0 48px; }
+    .eyebrow { color:var(--green); letter-spacing:.34em; text-transform:uppercase; font-size:13px; font-weight:800; }
+    h1 { font-size:clamp(44px, 8vw, 88px); line-height:.95; max-width:880px; margin:24px 0; letter-spacing:-.06em; }
+    .lead { max-width:720px; color:var(--muted); font-size:20px; line-height:1.7; }
+    .actions { display:flex; gap:14px; flex-wrap:wrap; margin-top:34px; }
+    .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin:40px 0 72px; }
+    .card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.055); border-radius:24px; padding:24px; box-shadow:0 20px 80px rgba(0,0,0,.24); }
+    .card h2 { margin:0 0 10px; font-size:20px; }
+    .card p { margin:0; color:var(--muted); line-height:1.6; }
+    .section { padding:54px 0; border-top:1px solid rgba(255,255,255,.08); }
+    .section h2 { font-size:36px; margin:0 0 16px; letter-spacing:-.03em; }
+    .steps { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; counter-reset:step; }
+    .step { counter-increment:step; border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:20px; background:rgba(15,23,42,.72); }
+    .step:before { content:counter(step); display:grid; place-items:center; width:34px; height:34px; border-radius:999px; background:var(--green2); color:#02130d; font-weight:900; margin-bottom:14px; }
+    .note { color:#94a3b8; font-size:14px; line-height:1.7; margin-top:28px; }
+    footer { padding:40px 0; color:#94a3b8; border-top:1px solid rgba(255,255,255,.08); }
+    @media (max-width: 760px) { .grid, .steps { grid-template-columns:1fr; } .navlinks { display:none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="/roamfit/">RoamFit</a>
+      <div class="navlinks">
+        <a href="#marketplace">Marketplace</a>
+        <a href="#mvp">MVP</a>
+        <a href="https://github.com/rody-boy/roamfit">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <p class="eyebrow">RoamFit Philippines</p>
+      <h1>Train Anywhere in the Philippines.</h1>
+      <p class="lead">RoamFit is a credit-based fitness marketplace connecting members with independent gyms and fitness facilities. This GitHub Pages site is the public landing page while the Laravel MVP application is prepared for PHP hosting.</p>
+      <div class="actions">
+        <a class="pill" href="#mvp">View MVP plan</a>
+        <a class="ghost" href="https://github.com/rody-boy/roamfit">View source</a>
+      </div>
+    </section>
+
+    <section id="marketplace" class="wrap grid">
+      <article class="card"><h2>Discover facilities</h2><p>Browse gyms and fitness spaces by location, category, and credit cost.</p></article>
+      <article class="card"><h2>Use flexible credits</h2><p>Members buy credits once and redeem them at approved partner facilities.</p></article>
+      <article class="card"><h2>Support local gyms</h2><p>Business owners get a simple onboarding path with no listing fees for the MVP.</p></article>
+    </section>
+
+    <section id="mvp" class="section">
+      <div class="wrap">
+        <h2>Laravel MVP build path</h2>
+        <p class="lead">The production app is now a single Laravel MVP instead of a complex multi-app scaffold. The first release focuses on the core marketplace loop.</p>
+        <div class="steps">
+          <div class="step"><strong>Admin config</strong><p>Manage businesses, facilities, and categories.</p></div>
+          <div class="step"><strong>Member discovery</strong><p>Let users browse active partner facilities.</p></div>
+          <div class="step"><strong>Credits</strong><p>Support configurable packages and a ledger.</p></div>
+          <div class="step"><strong>Check-ins</strong><p>Redeem member visits with staff validation.</p></div>
+        </div>
+        <p class="note">GitHub Pages can only serve static files. The Laravel app in this repository requires a PHP host such as Laravel Forge, Ploi, Render, Railway, DigitalOcean, or another server that can run PHP and a database.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">© RoamFit. Built for the Philippines.</div>
+  </footer>
+</body>
+</html>
