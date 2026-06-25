@@ -1,0 +1,29 @@
+{
+  "name": "roamfit-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "RoamFit production-grade marketplace platform scaffold.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "validate:repo": "node scripts/validate-repo.mjs && npm run doctor:decorators",
+    "lint": "npm run validate:repo",
+    "test": "npm run validate:repo",
+    "build": "npm --workspace @roamfit/web run build",
+    "typecheck:api": "npm --workspace @roamfit/api run typecheck",
+    "typecheck:web": "tsc -p apps/web/tsconfig.json --noEmit",
+    "typecheck": "npm run typecheck:api && npm run typecheck:web",
+    "doctor:decorators": "node scripts/check-decorator-config.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
