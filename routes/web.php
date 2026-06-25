@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\BusinessController as AdminBusinessController;
+use App\Http\Controllers\Admin\FacilityCategoryController as AdminFacilityCategoryController;
+use App\Http\Controllers\Admin\FacilityController as AdminFacilityController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
@@ -21,4 +24,10 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 Route::get('/dashboard', DashboardController::class)->middleware('auth')->name('dashboard');
 
-Route::view('/admin', 'admin.index')->middleware(['auth', 'role:admin'])->name('admin.index');
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::view('/', 'admin.index')->name('index');
+    Route::resource('businesses', AdminBusinessController::class)->except(['show', 'destroy']);
+    Route::resource('facilities', AdminFacilityController::class)->except(['show', 'destroy']);
+    Route::resource('facility-categories', AdminFacilityCategoryController::class)->except(['show', 'destroy']);
+});

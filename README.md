@@ -21,6 +21,15 @@ Ship the smallest useful product loop:
 - Manual payment confirmation before payment gateway integration
 - Responsive web first; native mobile deferred
 
+
+## Current MVP Capabilities
+
+- Public home page and active facility discovery.
+- Member registration, login, logout, and dashboard with credit balance.
+- Admin-only shell for managing businesses, facilities, and configurable facility categories.
+- Seeded admin, owner, category, business, facility, and starter credit package.
+- Marketplace, credit package, purchase, check-in token, check-in, and credit ledger migrations.
+
 ## Local Setup
 
 ```bash
